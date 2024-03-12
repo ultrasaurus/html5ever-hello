@@ -60,6 +60,8 @@ name = "html5ever-hello"
 version = "0.1.0"
 dependencies = [
  "html5ever",
+ "markup5ever",
+ "string_cache",
 ]
 
 [[package]]

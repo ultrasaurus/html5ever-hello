@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 html5ever = "0.26.0"
+markup5ever = "0.11.0"
+string_cache = "0.8.7"

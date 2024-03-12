@@ -1,6 +1,10 @@
 use html5ever::{
-    buffer_queue::BufferQueue, tendril::{SliceExt, StrTendril}, tokenizer::{Tag, TagKind, Token, TokenSink, TokenSinkResult, Tokenizer, TokenizerOpts}, Attribute, LocalName
+    Attribute,
+    buffer_queue::BufferQueue, tendril::{SliceExt, StrTendril},
+    tokenizer::{Tag, Token, TokenSink, TokenSinkResult, Tokenizer, TokenizerOpts},
 };
+use  string_cache::Atom;
+use markup5ever::LocalNameStaticSet;
 
 struct StyleExtractor {
     styles: Vec<StrTendril>
@@ -29,18 +33,16 @@ impl TokenSink for StyleExtractor {
 
     #[allow(clippy::match_same_arms)]
     fn process_token(&mut self, token: Token, _line_number: u64) -> TokenSinkResult<()> {
+        let _link:Atom<LocalNameStaticSet> = "link".into();
         match token {
             Token::TagToken(
-                Tag{name,attrs,..}) => {
-                    if name.to_lowercase() == "link" {
-                        if find_attr_by_namevalue(&attrs,
-                            "rel", "stylesheet").is_some() {
-                            let maybe_href = find_attr_by_name(&attrs, "href");
-                            if let Some(href_attr) = maybe_href {
-                                self.styles.push(href_attr.value.clone())
-                            }
+                Tag{name: _link ,attrs,..}) => {
+                    if find_attr_by_namevalue(&attrs,
+                        "rel", "stylesheet").is_some() {
+                        if let Some(href_attr) = find_attr_by_name(&attrs, "href") {
+                            self.styles.push(href_attr.value.clone())
                         }
-                    };
+                    }
             },
             _ => {
 
