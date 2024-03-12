@@ -13,6 +13,11 @@ impl StyleExtractor {
     }
 }
 
+fn find_attribute_by_name<'a>(attrs: &'a Vec<Attribute>, name: &str) -> Option<&'a Attribute> {
+    attrs.iter().find(|&attr| &attr.name.local == name)
+}
+
+
 impl TokenSink for StyleExtractor {
     type Handle = ();
 
@@ -29,16 +34,12 @@ impl TokenSink for StyleExtractor {
                                     attr.value == "stylesheet".to_tendril()
                                 );
                         if style.is_some() {
-                            let maybe_href = attrs.iter()
-                                .find(|&attr|
-                                    &attr.name.local == "href"
-                                );
+                            let maybe_href = find_attribute_by_name(&attrs, "href");
                             if let Some(href_attr) = maybe_href {
-                                    self.styles.push(href_attr.value.clone())
+                                self.styles.push(href_attr.value.clone())
                             }
                         }
-            }
-
+                    };
             },
             _ => {
 
