@@ -30,15 +30,15 @@ impl TokenSink for StyleExtractor {
             //     } = tag;
             //println!("tag: {}\t attrs: {:?}", name, attrs);
             if name.to_lowercase() == "link" {
-                let maybe_style = attrs.iter()
+                let style = attrs.iter()
                         .find(|&attr|
-                            attr.name.local.to_lowercase() == "rel" &&
+                            &attr.name.local == "rel" &&
                             attr.value == "stylesheet".to_tendril()
                         );
-                if let Some(style_attr) = maybe_style {
+                if style.is_some() {
                     let maybe_href = attrs.iter()
                         .find(|&attr|
-                            attr.name.local.to_lowercase() == "href"
+                            &attr.name.local == "href"
                         );
                     if let Some(href_attr) = maybe_href {
                             self.styles.push(href_attr.value.clone())
