@@ -1,5 +1,5 @@
 use html5ever::{
-    buffer_queue::BufferQueue, tendril::{SliceExt, StrTendril}, tokenizer::{Tag, TagKind, Token, TokenSink, TokenSinkResult, Tokenizer, TokenizerOpts}, LocalName
+    buffer_queue::BufferQueue, tendril::{SliceExt, StrTendril}, tokenizer::{Tag, TagKind, Token, TokenSink, TokenSinkResult, Tokenizer, TokenizerOpts}, Attribute, LocalName
 };
 
 struct StyleExtractor {
@@ -16,34 +16,27 @@ impl StyleExtractor {
 impl TokenSink for StyleExtractor {
     type Handle = ();
 
+
     #[allow(clippy::match_same_arms)]
     fn process_token(&mut self, token: Token, _line_number: u64) -> TokenSinkResult<()> {
         match token {
             Token::TagToken(
                 Tag{name,attrs,..}) => {
-            // Token::TagToken(tag) => {
-            //     let Tag {
-            //         kind,
-            //         name,
-            //         self_closing: _self_closing,
-            //         attrs,
-            //     } = tag;
-            //println!("tag: {}\t attrs: {:?}", name, attrs);
-            if name.to_lowercase() == "link" {
-                let style = attrs.iter()
-                        .find(|&attr|
-                            &attr.name.local == "rel" &&
-                            attr.value == "stylesheet".to_tendril()
-                        );
-                if style.is_some() {
-                    let maybe_href = attrs.iter()
-                        .find(|&attr|
-                            &attr.name.local == "href"
-                        );
-                    if let Some(href_attr) = maybe_href {
-                            self.styles.push(href_attr.value.clone())
-                    }
-                }
+                    if name.to_lowercase() == "link" {
+                        let style = attrs.iter()
+                                .find(|&attr|
+                                    &attr.name.local == "rel" &&
+                                    attr.value == "stylesheet".to_tendril()
+                                );
+                        if style.is_some() {
+                            let maybe_href = attrs.iter()
+                                .find(|&attr|
+                                    &attr.name.local == "href"
+                                );
+                            if let Some(href_attr) = maybe_href {
+                                    self.styles.push(href_attr.value.clone())
+                            }
+                        }
             }
 
             },
