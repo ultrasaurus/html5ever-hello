@@ -13,14 +13,19 @@ impl StyleExtractor {
     }
 }
 
-fn find_attribute_by_name<'a>(attrs: &'a Vec<Attribute>, name: &str) -> Option<&'a Attribute> {
+fn find_attr_by_name<'a>(attrs: &'a Vec<Attribute>, name: &str) -> Option<&'a Attribute> {
     attrs.iter().find(|&attr| &attr.name.local == name)
 }
 
+fn find_attr_by_namevalue<'a>(attrs: &'a Vec<Attribute>, name: &str, value: &str) -> Option<&'a Attribute> {
+    attrs.iter().find(|&attr|
+        &attr.name.local == name &&
+        attr.value == value.to_tendril()
+    )
+}
 
 impl TokenSink for StyleExtractor {
     type Handle = ();
-
 
     #[allow(clippy::match_same_arms)]
     fn process_token(&mut self, token: Token, _line_number: u64) -> TokenSinkResult<()> {
@@ -28,13 +33,9 @@ impl TokenSink for StyleExtractor {
             Token::TagToken(
                 Tag{name,attrs,..}) => {
                     if name.to_lowercase() == "link" {
-                        let style = attrs.iter()
-                                .find(|&attr|
-                                    &attr.name.local == "rel" &&
-                                    attr.value == "stylesheet".to_tendril()
-                                );
-                        if style.is_some() {
-                            let maybe_href = find_attribute_by_name(&attrs, "href");
+                        if find_attr_by_namevalue(&attrs,
+                            "rel", "stylesheet").is_some() {
+                            let maybe_href = find_attr_by_name(&attrs, "href");
                             if let Some(href_attr) = maybe_href {
                                 self.styles.push(href_attr.value.clone())
                             }
