@@ -7,7 +7,7 @@ use  string_cache::Atom;
 use markup5ever::LocalNameStaticSet;
 
 struct StyleExtractor {
-    styles: Vec<StrTendril>
+    styles: Vec<String>
 }
 impl StyleExtractor {
     pub fn new() -> Self {
@@ -40,7 +40,7 @@ impl TokenSink for StyleExtractor {
                     if find_attr_by_namevalue(&attrs,
                         "rel", "stylesheet").is_some() {
                         if let Some(href_attr) = find_attr_by_name(&attrs, "href") {
-                            self.styles.push(href_attr.value.clone())
+                            self.styles.push(href_attr.value.to_string())
                         }
                     }
             },
