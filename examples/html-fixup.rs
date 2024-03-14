@@ -1,5 +1,5 @@
 // illustrates how to generate valid xhtml from html fragment with common errors
-
+// submitted as PR: ttps://github.com/servo/html5ever/pull/504/files
 // extern crate html5ever;
 // extern crate markup5ever_rcdom as rcdom;
 
